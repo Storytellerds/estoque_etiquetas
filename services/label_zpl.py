@@ -26,12 +26,16 @@ def build_zpl_label(item: StockItem, size_mm: tuple[int, int]) -> str:
 ^PW{pw}
 ^LL{ll}
 ^CI28
-^FO20,20^A0N,60,50^FD{pos}^FS
+^FO20,20^A0N,60,50^FB760,1,0,C,0^FD{pos}^FS
+
 ^FO20,110^A0N,32,28^FDCOD:^FS
-^FO160,110^A0N,32,28^FD{code}^FS
+^FO105,110^A0N,32,28^FB655,1,0,C,0^FD{code}^FS
+
 ^FO20,155^A0N,32,28^FDPN:^FS
-^FO160,155^A0N,32,28^FD{pn}^FS
-^FO20,210^A0N,26,22^FD{desc}^FS
+^FO105,155^A0N,32,28^FB655,1,0,C,0^FD{pn}^FS
+
+^FO20,210^A0N,26,22^FB760,2,0,C,0^FD{desc}^FS
+
 ^XZ"""
     else:
         # 50mm ~ 400 dots, 30mm ~ 240 dots @203dpi
@@ -41,10 +45,14 @@ def build_zpl_label(item: StockItem, size_mm: tuple[int, int]) -> str:
 ^PW{pw}
 ^LL{ll}
 ^CI28
-^FO15,15^A0N,36,30^FD{pos}^FS
-^FO15,70^A0N,22,20^FDCOD:^FS
-^FO95,70^A0N,22,20^FD{ellipsize(code, 20)}^FS
-^FO15,100^A0N,22,20^FDPN:^FS
-^FO95,100^A0N,22,20^FD{ellipsize(pn, 20)}^FS
-^FO15,135^A0N,18,16^FD{ellipsize(desc, 28)}^FS
+^FO10,10^A0N,36,30^FB380,1,0,C,0^FD{pos}^FS
+
+^FO10,65^A0N,22,20^FDCOD:^FS
+^FO85,65^A0N,22,20^FB300,1,0,C,0^FD{ellipsize(code, 20)}^FS
+
+^FO10,95^A0N,22,20^FDPN:^FS
+^FO85,95^A0N,22,20^FB300,1,0,C,0^FD{ellipsize(pn, 20)}^FS
+
+^FO10,130^A0N,18,16^FB380,2,0,C,0^FD{ellipsize(desc, 40)}^FS
+
 ^XZ"""

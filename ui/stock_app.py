@@ -111,7 +111,7 @@ class StockApp(tk.Tk):
         ttk.Button(bottom, text="Gerar PDF", command=self.on_print_pdf).pack(side="left", padx=10)
 
         ttk.Label(bottom, text="Impressora (Windows)").pack(side="left", padx=(20, 0))
-        self.var_printer = tk.StringVar(value="DASCOM DL-200")  # ajuste depois
+        self.var_printer = tk.StringVar(value="VZPL_port_Douglas")  # ajuste depois
         ttk.Entry(bottom, textvariable=self.var_printer, width=30).pack(side="left", padx=6)
 
         ttk.Button(bottom, text="Imprimir (ZPL)", command=self.on_print_zpl).pack(side="left", padx=10)
