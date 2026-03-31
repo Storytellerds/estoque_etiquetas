@@ -1,19 +1,26 @@
 from typing import List
-
+import unicodedata
 import openpyxl
 
 from models.stock_item import StockItem
-from utils.text_utils import norm
 
 
 COLUMN_ALIASES = {
-    "position": ["armazem_sumare", "posicao", "posição", "pos", "endereco", "endereço", "local", "loc"],
-    "code": ["codigo", "código", "code", "item", "cod"],
-    "pn": ["pn", "part number", "partnumber", "p/n"],
-    "description": ["descricao", "descrição", "description", "desc"],
+    "position": ["Armaz_Sumare", "posicao", "posição", "pos", "endereco", "endereço", "local", "loc"],
+    "code": ["CODIGO", "código", "code", "item", "cod"],
+    "pn": ["Part Number", "part number", "partnumber", "p/n"],
+    "description": ["DESCRICAO", "descrição", "description", "desc"],
 }
 
 REQUIRED_FIELDS = ["position", "code", "pn", "description"]
+
+
+def norm(text: str) -> str:
+    text = str(text or "")
+    text = text.replace("\n", " ").replace("\r", " ")
+    text = " ".join(text.split())
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8")
+    return text.strip().lower()
 
 
 def _find_header_map(headers: List[str]) -> dict[str, int]:
@@ -22,8 +29,9 @@ def _find_header_map(headers: List[str]) -> dict[str, int]:
 
     for field, aliases in COLUMN_ALIASES.items():
         for alias in aliases:
-            if alias in headers_norm:
-                mapping[field] = headers_norm.index(alias)
+            alias_norm = norm(alias)
+            if alias_norm in headers_norm:
+                mapping[field] = headers_norm.index(alias_norm)
                 break
 
     return mapping
@@ -49,14 +57,20 @@ def load_stock_items_from_excel(path: str) -> List[StockItem]:
             + "\n- ".join(headers)
         )
 
+    header_norm = [norm(h) for h in headers]
+
     items: List[StockItem] = []
     for row in rows[1:]:
+        row_values = [str(cell or "").strip() for cell in row]
+
+        if [norm(v) for v in row_values[:len(headers)]] == header_norm:
+            continue
+
         position = str(row[col_map["position"]] or "").strip()
         code = str(row[col_map["code"]] or "").strip()
         pn = str(row[col_map["pn"]] or "").strip()
         description = str(row[col_map["description"]] or "").strip()
 
-        # ignora linha totalmente vazia
         if not (position or code or pn or description):
             continue
 
