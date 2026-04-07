@@ -105,23 +105,24 @@ def _handle_row_click(e) -> None:
 
 
 def _handle_file_upload(e: events.UploadEventArguments) -> None:
-    suffix = ".xlsm" if (e.name or "").endswith(".xlsm") else ".xlsx"
-    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-        tmp.write(e.content.read())
-        tmp_path = tmp.name
-
     try:
-        state.all_items = load_stock_items_from_excel(tmp_path)
-    except Exception as exc:
-        ui.notify(str(exc), type="negative", timeout=0)
-        return
-    finally:
-        os.unlink(tmp_path)
+        suffix = ".xlsm" if (e.name or "").endswith(".xlsm") else ".xlsx"
+        e.content.seek(0)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            tmp.write(e.content.read())
+            tmp_path = tmp.name
 
-    _apply_filters()
-    if _status_label:
-        _status_label.set_text(f"Importado: {len(state.all_items)} itens.")
-    ui.notify(f"Importado: {len(state.all_items)} itens.", type="positive")
+        try:
+            state.all_items = load_stock_items_from_excel(tmp_path)
+        finally:
+            os.unlink(tmp_path)
+
+        _apply_filters()
+        if _status_label:
+            _status_label.set_text(f"Importado: {len(state.all_items)} itens.")
+        ui.notify(f"Importado: {len(state.all_items)} itens.", type="positive")
+    except Exception as exc:
+        ui.notify(f"Erro ao importar: {exc}", type="negative", timeout=0)
 
 
 def _on_print_pdf() -> None:
