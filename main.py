@@ -1,5 +1,11 @@
-from ui.stock_app import StockApp
+from ui.stock_app import build_ui
+from nicegui import ui
 
-if __name__ == "__main__":
-    app = StockApp()
-    app.mainloop()
+build_ui()
+
+ui.run(
+    title="Estoque + Etiquetas",
+    native=True,
+    window_size=(1100, 700),
+    reload=False,
+)
