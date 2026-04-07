@@ -5,7 +5,8 @@ build_ui()
 
 ui.run(
     title="Estoque + Etiquetas",
-    native=True,
-    window_size=(1100, 700),
+    host="127.0.0.1",
+    port=8080,
+    show=True,
     reload=False,
 )
